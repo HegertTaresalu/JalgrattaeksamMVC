@@ -60,15 +60,7 @@ namespace JalgrattaeksamMVC.Controllers
                         return NotFound();
                     }
 
-                    try
-                    {
-
-                    }
-                    catch (Exception)
-                    {
-
-                        throw;
-                    }
+                   
             }
 
             return RedirectToAction(Osa);
@@ -82,9 +74,36 @@ namespace JalgrattaeksamMVC.Controllers
             return View(await model.ToListAsync());
         }
 
-        public async Task<IActionResult> Ringrada()
+        public async Task<IActionResult> Ring()
         {
-            var model = _context.Eksam.Where(e => e.Teooria >= 9 && e.Slaalom == -1);
+            var model = _context.Eksam.Where(e => e.Teooria >= 9 && e.Ring == -1);
+            return View(await model.ToListAsync());
+        }
+
+
+        public async Task<IActionResult> Tänav()
+        {
+            var model = _context.Eksam.Where(e => e.Ring == 1 && e.Slaalom == 1 && e.Tänav ==-1);
+            return View(await model.ToListAsync());
+        }
+
+
+        public async Task<IActionResult> Luba()
+        {
+            var model = _context.Eksam.Select(e =>
+            new LubaViewModel()
+            {
+                Id = e.Id,
+                Eesnimi = e.Eesnimi,
+                Perenimi = e.Perenimi,
+                Teooria = e.Teooria,
+                Ring = e.Ring ==-1?".":e.Ring==1?"õnnestunud":"Põrus",
+                Slaalom = e.Slaalom == -1 ? "." : e.Slaalom == 1 ? "õnnestunud" : "Põrus",
+                Tänav = e.Tänav == -1 ? "." : e.Tänav == 1 ? "õnnestunud" : "Põrus",
+                Luba = e.Luba == 1?"väljastatud": e.Tänav == 1 ? "Väljasta" : "."
+
+
+            });
             return View(await model.ToListAsync());
         }
 
