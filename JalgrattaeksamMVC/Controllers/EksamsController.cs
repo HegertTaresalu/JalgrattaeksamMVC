@@ -62,12 +62,24 @@ namespace JalgrattaeksamMVC.Controllers
 
                    
             }
+            try
+            {
+                _context.Update(eksam);
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateConcurrencyException)
+            {
+                if(!EksamExists(eksam.Id))
+                {
+                    return NotFound();
+                }
+            }
+
 
             return RedirectToAction(Osa);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Slaalom()
         {
             var model = _context.Eksam.Where(e => e.Teooria >= 9 && e.Slaalom == -1);
@@ -106,6 +118,36 @@ namespace JalgrattaeksamMVC.Controllers
             });
             return View(await model.ToListAsync());
         }
+        
+        public async Task<IActionResult> VäljastaLuba(int id)
+        {
+            var model = await _context.Eksam.FindAsync(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+            if (model.Tänav == 1)
+            {
+                model.Luba = 1;
+                try
+                {
+                    _context.Update(model);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EksamExists(model.Id))
+                    {
+                        return NotFound();
+                    }
+                }
+            }
+
+
+
+            return RedirectToAction(nameof(Luba));
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

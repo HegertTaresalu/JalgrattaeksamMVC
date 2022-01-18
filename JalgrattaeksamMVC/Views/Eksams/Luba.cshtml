@@ -58,13 +58,14 @@
                 @Html.DisplayFor(modelItem => item.Tänav)
             </td>
             <td>
-                @if (item.Luba == "väjastatud")
+                @if (item.Luba == "väljastatud")
                 {
-                    <a asp-action="VäljastaLuba" asp-route-id="@item.Id">Väljasta Luba</a>
+                    @item.Luba
                 }
                 else
                 {
-                    @Html.DisplayFor(ModelItem => item.Luba)
+                    <a asp-action="VäljastaLuba" asp-route-id="@item.Id">Väljasta</a>
+
                 }
             </td>
             <td>
